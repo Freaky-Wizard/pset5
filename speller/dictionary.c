@@ -92,7 +92,9 @@ index(char c)
 
 
 
-
+/*
+ * Returns number of words in dictionary if loaded else 0 if not yet loaded.
+ */
 
 unsigned int
 size(void)
@@ -104,23 +106,27 @@ size(void)
 }
 
 
+/*
+ * Unloads dictionary from memory.  Returns true if successful else false.
+ */
 
 bool
 unload(void)
 {
-    for (int i=0;i<27;i++)           
-        if (root.child[i] != NULL)   by malloc)
+    for (int i=0;i<27;i++)            // can't just call freeNode(&root),this will cause free(&root),but
+    {
+        if (root.child[i] != NULL)  // root is not in heap(cause it's not allocated by malloc)
             freeNode(root.child[i]);
     }
-    return true;         
+    return true;         // can't figure out when to return false...
 }
 
 void freeNode(node *cNode)
 {
     for (int i=0;i<27;i++)
     {
-        if (cNode->child[i] != NULL)   
-            freeNode(cNode->child[i]); 
+        if (cNode->child[i] != NULL)   // free node recursively, the method is elegant!
+            freeNode(cNode->child[i]); // first free all the child,then free itself.
     }
     free(cNode);
  }
