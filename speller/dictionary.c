@@ -41,7 +41,9 @@ bool check(const char *word)
 }
 
 
-
+/*
+ * Loads dictionary into memory.  Returns true if successful else false.
+ */
 
 bool
 load(const char *dictionary)
@@ -57,26 +59,28 @@ load(const char *dictionary)
         node *ptr = &root;
         for (int i=0;i<strlen(word);i++)
         {
-            if (ptr->child[index(word[i])] == NULL)  
+            if (ptr->child[index(word[i])] == NULL)  // if it's NULL, malloc a new node,point to it.
             {
                 node *new = malloc(sizeof(node));   
-                *new = (node) {false,{NULL}};       
+                *new = (node) {false,{NULL}};       // initiallization
                 ptr->child[index(word[i])] = new;
                 ptr = new;
             }
             else
             {
-                ptr = ptr->child[index(word[i])];  
+                ptr = ptr->child[index(word[i])];  // if it's not, just point to next node.
             }
          }
-         ptr->is_word = true
+         ptr->is_word = true;  // if the word ends, flag "is_word" to true.
     }
-fclose(file);      
+fclose(file);          // you don't want to forget file. 
 return true;
 }
 
 
-
+/*
+ * caculate a number for the character
+ */
 
 int
 index(char c)
