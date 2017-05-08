@@ -41,9 +41,7 @@ bool check(const char *word)
 }
 
 
-/*
- * Loads dictionary into memory.  Returns true if successful else false.
- */
+
 
 bool
 load(const char *dictionary)
@@ -51,15 +49,34 @@ load(const char *dictionary)
     FILE *file = fopen(dictionary,"r");
     if (file == NULL)
         return false;
-   
-fclose(file);          // you don't want to forget file. 
+    while (!feof(file))
+    {
+        char word[LENGTH+1] = {};
+        fscanf(file,"%s\n",word); // have to use "%s\n" instead of "%s", or the count will be wrong, don't know why.
+        count++;    
+        node *ptr = &root;
+        for (int i=0;i<strlen(word);i++)
+        {
+            if (ptr->child[index(word[i])] == NULL)  
+            {
+                node *new = malloc(sizeof(node));   
+                *new = (node) {false,{NULL}};       
+                ptr->child[index(word[i])] = new;
+                ptr = new;
+            }
+            else
+            {
+                ptr = ptr->child[index(word[i])];  
+            }
+         }
+         ptr->is_word = true
+    }
+fclose(file);      
 return true;
 }
 
 
-/*
- * caculate a number for the character
- */
+
 
 int
 index(char c)
@@ -75,9 +92,7 @@ index(char c)
 
 
 
-/*
- * Returns number of words in dictionary if loaded else 0 if not yet loaded.
- */
+
 
 unsigned int
 size(void)
@@ -89,27 +104,23 @@ size(void)
 }
 
 
-/*
- * Unloads dictionary from memory.  Returns true if successful else false.
- */
 
 bool
 unload(void)
 {
-    for (int i=0;i<27;i++)            // can't just call freeNode(&root),this will cause free(&root),but
-    {
-        if (root.child[i] != NULL)  // root is not in heap(cause it's not allocated by malloc)
+    for (int i=0;i<27;i++)           
+        if (root.child[i] != NULL)   by malloc)
             freeNode(root.child[i]);
     }
-    return true;         // can't figure out when to return false...
+    return true;         
 }
 
 void freeNode(node *cNode)
 {
     for (int i=0;i<27;i++)
     {
-        if (cNode->child[i] != NULL)   // free node recursively, the method is elegant!
-            freeNode(cNode->child[i]); // first free all the child,then free itself.
+        if (cNode->child[i] != NULL)   
+            freeNode(cNode->child[i]); 
     }
     free(cNode);
  }
